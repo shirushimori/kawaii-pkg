@@ -1,15 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Helper: read from /dev/tty (works with curl | bash)
-read_from_tty() {
-    if [ -t 0 ]; then
-        read -r
-    else
-        read -r < /dev/tty
-    fi
-}
-
 REPO="https://github.com/shirushimori/kawaii-pkg.git"
 TMPDIR=$(mktemp -d)
 INSTALL_DIR="$HOME/.local/bin"
@@ -21,6 +12,16 @@ echo "  ⬡ Kawaii-pkg Installer"
 echo "  ─────────────────────────"
 echo ""
 
+# Helper: read from terminal even when piped
+ask() {
+    if [ -t 0 ]; then
+        read -r REPLY
+    else
+        read -r REPLY < /dev/tty
+    fi
+    echo "$REPLY"
+}
+
 # Check if already installed
 if [ -f "$INSTALL_DIR/$BINARY_NAME" ]; then
     echo "  Previous installation found at $INSTALL_DIR/$BINARY_NAME"
@@ -30,7 +31,7 @@ if [ -f "$INSTALL_DIR/$BINARY_NAME" ]; then
     echo "  [3] Cancel"
     echo ""
     printf "  Choose (1/2/3): "
-    CHOICE=$(read_from_tty)
+    CHOICE=$(ask)
     case "$CHOICE" in
         2)
             echo ""
@@ -82,11 +83,11 @@ chmod +x "$INSTALL_DIR/$BINARY_NAME"
 echo ""
 
 printf "  Command name (default: kawaii): "
-CMD_NAME=$(read_from_tty)
+CMD_NAME=$(ask)
 CMD_NAME="${CMD_NAME:-kawaii}"
 
 printf "  Alias name (leave blank to skip): "
-ALIAS_NAME=$(read_from_tty)
+ALIAS_NAME=$(ask)
 
 # Always create the primary command symlink
 if [ "$CMD_NAME" != "kawaii" ]; then
