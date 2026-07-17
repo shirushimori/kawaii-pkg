@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Helper: read from /dev/tty (works with curl | bash)
+read_from_tty() {
+    if [ -t 0 ]; then
+        read -r
+    else
+        read -r < /dev/tty
+    fi
+}
+
 REPO="https://github.com/shirushimori/kawaii-pkg.git"
 TMPDIR=$(mktemp -d)
 INSTALL_DIR="$HOME/.local/bin"
@@ -20,7 +29,8 @@ if [ -f "$INSTALL_DIR/$BINARY_NAME" ]; then
     echo "  [2] Uninstall"
     echo "  [3] Cancel"
     echo ""
-    read -rp "  Choose (1/2/3): " CHOICE
+    printf "  Choose (1/2/3): "
+    CHOICE=$(read_from_tty)
     case "$CHOICE" in
         2)
             echo ""
@@ -71,31 +81,32 @@ mkdir -p "$INSTALL_DIR"
 cp "$TMPDIR/target/release/$BINARY_NAME" "$INSTALL_DIR/$BINARY_NAME"
 chmod +x "$INSTALL_DIR/$BINARY_NAME"
 
-# Ask for command name
 echo ""
-read -rp "  Command name (default: kawaii): " CMD_NAME
+
+printf "  Command name (default: kawaii): "
+CMD_NAME=$(read_from_tty)
 CMD_NAME="${CMD_NAME:-kawaii}"
 
-# Ask for alias
-read -rp "  Alias name (leave blank to skip): " ALIAS_NAME
+printf "  Alias name (leave blank to skip): "
+ALIAS_NAME=$(read_from_tty)
 
 # Create symlinks
 if [ "$CMD_NAME" != "kawaii" ]; then
     ln -sf "$INSTALL_DIR/$BINARY_NAME" "$INSTALL_DIR/$CMD_NAME"
     chmod +x "$INSTALL_DIR/$CMD_NAME"
-    echo "  ✓ Command: $CMD_NAME → kawaii"
+    echo "  ✓ Command: ${CMD_NAME} → kawaii"
 fi
 
 if [ -n "$ALIAS_NAME" ] && [ "$ALIAS_NAME" != "$CMD_NAME" ]; then
     ln -sf "$INSTALL_DIR/$BINARY_NAME" "$INSTALL_DIR/$ALIAS_NAME"
     chmod +x "$INSTALL_DIR/$ALIAS_NAME"
-    echo "  ✓ Alias: $ALIAS_NAME → kawaii"
+    echo "  ✓ Alias: ${ALIAS_NAME} → kawaii"
 fi
 
 # Create config with command name
 mkdir -p "$(dirname "$CONFIG_FILE")"
 cat > "$CONFIG_FILE" << TOML
-name = "$CMD_NAME"
+name = "${CMD_NAME}"
 auto_yes = false
 colors = true
 parallel_search = true
@@ -124,16 +135,15 @@ TOML
 rm -rf "$TMPDIR"
 
 echo ""
-echo "  ✓ Installed to $INSTALL_DIR/$BINARY_NAME"
+echo "  ✓ Installed to ${INSTALL_DIR}/${BINARY_NAME}"
 echo ""
-DISPLAY_NAME="${CMD_NAME}"
-echo "  $DISPLAY_NAME -s <pkg>   Search"
-echo "  $DISPLAY_NAME -i <pkg>   Install"
-echo "  $DISPLAY_NAME -r <pkg>   Remove"
-echo "  $DISPLAY_NAME -u         Update"
-echo "  $DISPLAY_NAME -I <pkg>   Info"
-echo "  $DISPLAY_NAME -l         List"
-echo "  $DISPLAY_NAME -C         Clean"
-echo "  $DISPLAY_NAME -d         Doctor"
-echo "  $DISPLAY_NAME -c         Config"
-echo "  $DISPLAY_NAME -v         Version"
+echo "  ${CMD_NAME} -s <pkg>   Search"
+echo "  ${CMD_NAME} -i <pkg>   Install"
+echo "  ${CMD_NAME} -r <pkg>   Remove"
+echo "  ${CMD_NAME} -u         Update"
+echo "  ${CMD_NAME} -I <pkg>   Info"
+echo "  ${CMD_NAME} -l         List"
+echo "  ${CMD_NAME} -C         Clean"
+echo "  ${CMD_NAME} -d         Doctor"
+echo "  ${CMD_NAME} -c         Config"
+echo "  ${CMD_NAME} -v         Version"
