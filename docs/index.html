@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kawaii-pkg — Universal Linux Package Manager Wrapper | One Command, Every Manager</title>
+    <meta name="description" content="Kawaii-pkg is a Rust-based universal Linux package manager wrapper. Search, install, remove, and update packages across pacman, yay, paru, apt, dnf, zypper, flatpak, snap, and more with one unified CLI command.">
+    <meta name="keywords" content="kawaii-pkg, kawaii package manager, universal linux package manager, pacman wrapper, yay wrapper, paru wrapper, apt wrapper, dnf wrapper, flatpak wrapper, snap wrapper, rust linux cli, linux package manager wrapper, one command package manager, kawaii github, kawaii rust, kawaii-pkg github">
+    <meta name="author" content="shirushimori">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow">
+    <meta name="google-site-verification" content="googlea89da2f297a08b18.html">
+    <meta property="og:title" content="Kawaii-pkg — Universal Linux Package Manager Wrapper">
+    <meta property="og:description" content="One command. Every package manager. Kawaii-pkg is a Rust-based universal Linux package manager wrapper for pacman, yay, apt, dnf, flatpak, snap, and more.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://shirushimori.github.io/kawaii-pkg/">
+    <meta property="og:site_name" content="Kawaii-pkg">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Kawaii-pkg — Universal Linux Package Manager Wrapper">
+    <meta name="twitter:description" content="One command. Every package manager. Rust CLI for pacman, yay, apt, dnf, flatpak, snap, and more.">
+    <meta name="twitter:creator" content="@shirushimori">
+    <link rel="canonical" href="https://shirushimori.github.io/kawaii-pkg/">
+    <link rel="icon" href="https://raw.githubusercontent.com/shirushimori/shirushimori/refs/heads/main/assets/pfp1.jpg" type="image/jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #000; color: #fff; line-height: 1.6; overflow-x: hidden; }
+        a { color: #fff; }
+        .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+        .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 80px 24px; }
+        .hero-content { max-width: 700px; }
+        .logo { width: 100px; height: 100px; border-radius: 50%; margin-bottom: 24px; object-fit: cover; }
+        h1 { font-size: 64px; font-weight: 700; margin-bottom: 12px; color: #fff; }
+        .tagline { font-size: 20px; color: #888; margin-bottom: 40px; }
+        .tagline span { color: #fff; font-weight: 600; }
+        .install-box { background: #111; border: 1px solid #222; border-radius: 8px; padding: 18px 28px; display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 15px; color: #fff; position: relative; max-width: 100%; overflow-x: auto; }
+        .install-box .prompt { color: #666; }
+        .install-box .cmd { color: #ccc; }
+        .copy-btn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: #222; border: 1px solid #333; color: #888; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 12px; transition: all 0.2s; }
+        .copy-btn:hover { background: #fff; color: #000; border-color: #fff; }
+        section { padding: 80px 0; }
+        section + section { border-top: 1px solid #111; }
+        .section-title { font-size: 28px; font-weight: 700; text-align: center; margin-bottom: 40px; }
+        .section-title span { color: #666; }
+        details { background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 6px; margin-bottom: 8px; transition: border-color 0.3s; }
+        details[open] { border-color: #333; }
+        summary { padding: 16px 20px; cursor: pointer; font-size: 16px; font-weight: 500; color: #fff; list-style: none; display: flex; align-items: center; gap: 12px; transition: color 0.2s; user-select: none; }
+        summary::-webkit-details-marker { display: none; }
+        summary::before { content: '▸'; font-size: 12px; color: #555; transition: transform 0.3s; flex-shrink: 0; }
+        details[open] summary::before { transform: rotate(90deg); }
+        summary:hover { color: #ccc; }
+        .detail-body { padding: 0 20px 16px 44px; color: #888; font-size: 14px; line-height: 1.7; }
+        .detail-body code { background: #151515; padding: 2px 6px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #ccc; }
+        .managers { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 32px; }
+        .manager-badge { background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 4px; padding: 8px 16px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #666; transition: all 0.2s; }
+        .manager-badge:hover { border-color: #444; color: #fff; }
+        .demo { background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 6px; padding: 24px; max-width: 650px; margin: 32px auto 0; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 2; color: #ccc; }
+        .demo .comment { color: #444; }
+        .demo .green { color: #888; }
+        .demo .muted { color: #555; }
+        .shortcuts { max-width: 500px; margin: 32px auto 0; }
+        .shortcut-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #111; }
+        .shortcut-key { font-family: 'JetBrains Mono', monospace; color: #fff; font-size: 14px; }
+        .shortcut-desc { color: #666; font-size: 14px; }
+        footer { padding: 48px 0; text-align: center; border-top: 1px solid #111; }
+        footer p { color: #444; font-size: 13px; }
+        footer a { color: #888; text-decoration: none; transition: color 0.2s; }
+        footer a:hover { color: #fff; }
+        @media (max-width: 768px) { h1 { font-size: 40px; } .tagline { font-size: 16px; } .install-box { font-size: 13px; padding: 14px 18px; } }
+    </style>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Kawaii-pkg",
+        "alternateName": ["kawaii", "kawaii package manager", "kawaii-pkg github"],
+        "description": "Universal Linux Package Manager Wrapper — search, install, remove, and update packages across pacman, yay, paru, apt, dnf, zypper, flatpak, snap, and more with one unified CLI command.",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Linux",
+        "programmingLanguage": "Rust",
+        "downloadUrl": "https://github.com/shirushimori/kawaii-pkg",
+        "url": "https://shirushimori.github.io/kawaii-pkg/",
+        "codeRepository": "https://github.com/shirushimori/kawaii-pkg",
+        "license": "https://opensource.org/licenses/MIT",
+        "keywords": "kawaii-pkg, universal linux package manager, pacman wrapper, yay wrapper, apt wrapper, dnf wrapper, flatpak wrapper, snap wrapper, rust cli, linux package manager wrapper",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "author": { "@type": "Person", "name": "shirushimori", "url": "https://github.com/shirushimori" }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Kawaii-pkg",
+        "url": "https://shirushimori.github.io/kawaii-pkg/",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://github.com/shirushimori/kawaii-pkg/issues?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+</head>
+<body>
+    <section class="hero">
+        <div class="hero-content">
+            <img src="https://raw.githubusercontent.com/shirushimori/shirushimori/refs/heads/main/assets/pfp1.jpg" alt="Kawaii-pkg" class="logo">
+            <h1>Kawaii-pkg</h1>
+            <p class="tagline"><span>One command.</span> Every package manager.</p>
+            <div class="install-box">
+                <span class="prompt">$ </span><span class="cmd">curl -sSL https://raw.githubusercontent.com/shirushimori/kawaii-pkg/main/install.sh | bash</span>
+                <button class="copy-btn" onclick="copyInstall()">Copy</button>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <h2 class="section-title">Features</h2>
+            <details><summary>Universal Search</summary><div class="detail-body">Search across all your installed package managers at once. Find where a package lives — AUR, Flatpak, Snap, or official repos. Uses async parallel search with per-manager timeouts for speed.</div></details>
+            <details><summary>Smart Install</summary><div class="detail-body">Find a package in multiple managers? Kawaii-pkg asks you which one to use. One selection, one install command. Supports fuzzy selection when multiple managers have the package.</div></details>
+            <details><summary>13 Package Managers</summary><div class="detail-body">Works with <code>pacman</code>, <code>yay</code>, <code>paru</code>, <code>apt</code>, <code>dnf</code>, <code>yum</code>, <code>zypper</code>, <code>xbps</code>, <code>nix</code>, <code>apk</code>, <code>brew</code>, <code>flatpak</code>, and <code>snap</code>. Auto-detects which managers are installed.</div></details>
+            <details><summary>Shortcuts</summary><div class="detail-body"><code>-s</code> search · <code>-i</code> install · <code>-r</code> remove · <code>-u</code> update · <code>-I</code> info · <code>-l</code> list · <code>-C</code> clean · <code>-d</code> doctor · <code>-H</code> history · <code>-c</code> config · <code>-v</code> version</div></details>
+            <details><summary>Doctor</summary><div class="detail-body">Runs real system health checks. Detects and fixes broken packages with <code>sudo pacman -Dk</code>, syncs databases, checks mirrors and config.</div></details>
+            <details><summary>Sudo Support</summary><div class="detail-body">Automatically asks for sudo when using managers that require it (pacman, apt, dnf, yum, zypper, apk). No manual sudo needed.</div></details>
+            <details><summary>Custom Aliases</summary><div class="detail-body">Set your own command name during install. Use <code>loda -i firefox</code> instead of <code>kawaii -i firefox</code>. Change anytime via config or reinstall.</div></details>
+            <details><summary>Built with Rust</summary><div class="detail-body">Single static binary. No dependencies. No runtime. Copy it anywhere and it just works.</div></details>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <h2 class="section-title">Supported Managers</h2>
+            <div class="managers">
+                <div class="manager-badge">pacman</div>
+                <div class="manager-badge">yay</div>
+                <div class="manager-badge">paru</div>
+                <div class="manager-badge">apt</div>
+                <div class="manager-badge">dnf</div>
+                <div class="manager-badge">yum</div>
+                <div class="manager-badge">zypper</div>
+                <div class="manager-badge">xbps</div>
+                <div class="manager-badge">nix</div>
+                <div class="manager-badge">apk</div>
+                <div class="manager-badge">brew</div>
+                <div class="manager-badge">flatpak</div>
+                <div class="manager-badge">snap</div>
+            </div>
+            <div class="demo">
+                <span class="comment"># Search for a package</span><br>
+                <span class="green">$</span> kawaii <span class="muted">-s</span> firefox<br><br>
+                firefox is found in <span class="muted">3</span> manager(s):<br><br>
+                <span class="green">✓</span> pacman<br>
+                <span class="green">✓</span> yay<br>
+                <span class="green">✓</span> flatpak<br><br>
+                Install '<span class="muted">firefox</span>'? <span class="green">yes</span><br><br>
+                <span class="green">✓</span> firefox installed successfully.
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <h2 class="section-title">Shortcuts</h2>
+            <div class="shortcuts">
+                <div class="shortcut-row"><span class="shortcut-key">-s</span><span class="shortcut-desc">Search for a package</span></div>
+                <div class="shortcut-row"><span class="shortcut-key">-i</span><span class="shortcut-desc">Install a package</span></div>
+                <div class="shortcut-row"><span class="shortcut-key">-r</span><span class="shortcut-desc">Remove a package</span></div>
+                <div class="shortcut-row"><span class="shortcut-key">-u</span><span class="shortcut-desc">Update packages</span></div>
+                <div class="shortcut-row"><span class="shortcut-key">-I</span><span class="shortcut-desc">Package info</span></div>
+                <div class="shortcut-row"><span class="shortcut-key">-l</span><span class="shortcut-desc">List installed packages</span></div>
+                <div class="shortcut-row"><span class="shortcut-key">-C</span><span class="shortcut-desc">Clean package caches</span></div>
+                <div class="shortcut-row"><span class="shortcut-key">-d</span><span class="shortcut-desc">System health check</span></div>
+                <div class="shortcut-row"><span class="shortcut-key">-H</span><span class="shortcut-desc">Command history</span></div>
+                <div class="shortcut-row"><span class="shortcut-key">-c</span><span class="shortcut-desc">Open configuration</span></div>
+                <div class="shortcut-row"><span class="shortcut-key">-v</span><span class="shortcut-desc">Version info</span></div>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <div class="container">
+            <p><a href="https://github.com/shirushimori/kawaii-pkg">GitHub</a> · MIT License · Built with Rust</p>
+        </div>
+    </footer>
+    <script>
+        function copyInstall() {
+            navigator.clipboard.writeText('curl -sSL https://raw.githubusercontent.com/shirushimori/kawaii-pkg/main/install.sh | bash').then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            });
+        }
+    </script>
+</body>
+</html>

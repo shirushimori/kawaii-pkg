@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://shirushimori.github.io/kawaii-pkg/sitemap.xml

@@ -1,0 +1,36 @@
+[package]
+name = "kawaii-manager"
+version = "0.1.0"
+edition = "2024"
+description = "Universal Linux package manager wrapper"
+authors = ["Kawaii Contributors"]
+license = "MIT"
+
+[[bin]]
+name = "kawaii"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+tokio = { version = "1", features = ["full", "process"] }
+anyhow = "1"
+thiserror = "2"
+serde = { version = "1", features = ["derive"] }
+toml = "0.8"
+dirs = "6"
+colored = "3"
+indicatif = "0.17"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
+dialoguer = { version = "0.11", features = ["fuzzy-select"] }
+console = "0.15"
+chrono = { version = "0.4", features = ["serde"] }
+which = "7"
+async-trait = "0.1"
+futures = "0.3"
+serde_json = "1"
+
+[profile.release]
+opt-level = 3
+lto = true
+strip = true
