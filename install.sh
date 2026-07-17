@@ -68,12 +68,10 @@ git clone --depth 1 "$REPO" "$TMPDIR" &>/dev/null
 echo "  Building kawaii (release)..."
 cargo build --release --manifest-path "$TMPDIR/Cargo.toml" --quiet
 
-# Clean previous install
+# Clean previous install and all broken symlinks
 rm -f "$INSTALL_DIR/$BINARY_NAME"
 while IFS= read -r link; do
-    if [ -L "$link" ] && [ "$(readlink "$link")" = "$INSTALL_DIR/$BINARY_NAME" ]; then
-        rm -f "$link"
-    fi
+    rm -f "$link"
 done < <(find "$INSTALL_DIR" -maxdepth 1 -type l 2>/dev/null)
 
 # Install
@@ -90,14 +88,15 @@ CMD_NAME="${CMD_NAME:-kawaii}"
 printf "  Alias name (leave blank to skip): "
 ALIAS_NAME=$(read_from_tty)
 
-# Create symlinks
+# Always create the primary command symlink
 if [ "$CMD_NAME" != "kawaii" ]; then
     ln -sf "$INSTALL_DIR/$BINARY_NAME" "$INSTALL_DIR/$CMD_NAME"
     chmod +x "$INSTALL_DIR/$CMD_NAME"
     echo "  ✓ Command: ${CMD_NAME} → kawaii"
 fi
 
-if [ -n "$ALIAS_NAME" ] && [ "$ALIAS_NAME" != "$CMD_NAME" ]; then
+# Create optional alias symlink
+if [ -n "$ALIAS_NAME" ] && [ "$ALIAS_NAME" != "$CMD_NAME" ] && [ "$ALIAS_NAME" != "kawaii" ]; then
     ln -sf "$INSTALL_DIR/$BINARY_NAME" "$INSTALL_DIR/$ALIAS_NAME"
     chmod +x "$INSTALL_DIR/$ALIAS_NAME"
     echo "  ✓ Alias: ${ALIAS_NAME} → kawaii"
@@ -133,6 +132,16 @@ TOML
 
 # Cleanup
 rm -rf "$TMPDIR"
+
+# Check PATH
+if [[ ":$PATH:" != *":$INSTALL_DIR:"* ]]; then
+    echo ""
+    echo "  ⚠ $INSTALL_DIR is not in your PATH"
+    echo "  Add this to your ~/.bashrc or ~/.zshrc:"
+    echo ""
+    echo "    export PATH=\"\$HOME/.local/bin:\$PATH\""
+    echo ""
+fi
 
 echo ""
 echo "  ✓ Installed to ${INSTALL_DIR}/${BINARY_NAME}"
